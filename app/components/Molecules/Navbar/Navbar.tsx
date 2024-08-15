@@ -1,5 +1,4 @@
 "use client";
-
 import React from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
@@ -33,7 +32,10 @@ export default function Navbar() {
         <Toolbar sx={{ justifyContent: "space-between" }}>
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <Box sx={{ mb: 1 }}>
+              <Link href={'/Homepage'} >
               <Image src={myIcon} alt="My Icon" width={110} height={40} />
+              </Link>
+            
             </Box>
             <Box sx={{ ml: 3 }}>
               <Tabs
@@ -41,7 +43,7 @@ export default function Navbar() {
                 sx={{
                   "& .MuiTabs-indicator": {
                     height: "3px",
-                    bottom: "1px", // Position the underline lower
+                    bottom: "1px", 
                     color: "black",
                   },
                 }}
