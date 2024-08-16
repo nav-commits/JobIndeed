@@ -10,24 +10,27 @@ import {
   Tab,
   Box,
   TextField,
-  Divider, // Import Divider
+  Divider,
 } from "@mui/material";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import SearchIcon from "@mui/icons-material/Search";
+import theme from "../styles/theme";
 
 export default function Homepage() {
   const [value, setValue] = useState(0);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [job, setJob] = useState("");
+  const [city, setCity] = useState("");
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
-  const handleFirstNameChange = (e) => {
-    setFirstName(e.target.value);
+  const handleJobTitleChange = (e) => {
+    setJob(e.target.value);
   };
 
-  const handleLastNameChange = (e) => {
-    setLastName(e.target.value);
+  const handleCityChange = (e) => {
+    setCity(e.target.value);
   };
 
   useEffect(() => {
@@ -62,14 +65,15 @@ export default function Homepage() {
             width: "50%",
             border: "1px solid #949494",
             borderRadius: 2,
-            p: 0.5,
+            p: 0.8,
             boxShadow:
               "0 0.5rem 1rem rgba(45, 45, 45, 0.12), 0 0.25rem 0.5rem rgba(45, 45, 45, 0.16), 0 0 0.125rem rgba(45, 45, 45, 0.2)",
           }}
         >
+          <SearchIcon />
           <TextField
-            value={firstName}
-            onChange={handleFirstNameChange}
+            value={job}
+            onChange={ handleJobTitleChange}
             fullWidth
             placeholder="Job title, keywords, or company"
             sx={{
@@ -79,13 +83,11 @@ export default function Homepage() {
               flex: 1,
             }}
           />
-          <Divider
-            orientation="vertical"
-            sx={{ height: 40, mx: 1 }}
-          />
+          <Divider orientation="vertical" sx={{ height: 40, mx: 1 }} />
+          <LocationOnIcon />
           <TextField
-            value={lastName}
-            onChange={handleLastNameChange}
+            value={city}
+            onChange={handleCityChange}
             fullWidth
             placeholder="City, province, or remote"
             sx={{
@@ -100,7 +102,7 @@ export default function Homepage() {
             sx={{
               width: "120px",
               borderRadius: 3,
-              backgroundColor: "#2557a7",
+              backgroundColor: theme.palette.primary.main,
               textTransform: "none",
               p: 2,
             }}
@@ -112,7 +114,14 @@ export default function Homepage() {
 
       <Typography variant="subtitle1" sx={{ mt: 3, textAlign: "center" }}>
         Create better job descriptions with AI -{" "}
-        <Link href="#" sx={{ textDecoration: "none" }}>
+        <Link
+          href="#"
+          sx={{
+            textDecoration: "none",
+            color: theme.palette.primary.main,
+            fontWeight: "bold",
+          }}
+        >
           Post a job today
         </Link>
       </Typography>
