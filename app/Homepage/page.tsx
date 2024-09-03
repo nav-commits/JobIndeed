@@ -9,30 +9,32 @@ import {
   Tabs,
   Tab,
   Box,
-  TextField,
   Divider,
+  Card,
+  CardContent,
+  Grid,
+  Container,
 } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import SearchIcon from "@mui/icons-material/Search";
 import theme from "../styles/theme";
+import Input from "../components/Atoms/Input/Input";
 
 export default function Homepage() {
   const [value, setValue] = useState(0);
   const [job, setJob] = useState("");
   const [city, setCity] = useState("");
+  const [jobs, setJobs] = useState([]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
-
   const handleJobTitleChange = (e) => {
     setJob(e.target.value);
   };
-
   const handleCityChange = (e) => {
     setCity(e.target.value);
   };
-
   useEffect(() => {
     const fetchJobsCollection = async () => {
       const jobsCollectionRef = collection(db, "Jobs");
@@ -41,11 +43,11 @@ export default function Homepage() {
         id: doc.id,
         ...doc.data(),
       }));
-      console.log("Jobs Collection Data:", jobsList);
+      setJobs(jobsList);
     };
     fetchJobsCollection();
   }, []);
-
+  console.log(jobs);
   return (
     <>
       <Box
@@ -71,31 +73,17 @@ export default function Homepage() {
           }}
         >
           <SearchIcon />
-          <TextField
+          <Input
             value={job}
-            onChange={ handleJobTitleChange}
-            fullWidth
+            onChange={handleJobTitleChange}
             placeholder="Job title, keywords, or company"
-            sx={{
-              "& .MuiOutlinedInput-notchedOutline": {
-                border: "none",
-              },
-              flex: 1,
-            }}
           />
           <Divider orientation="vertical" sx={{ height: 40, mx: 1 }} />
           <LocationOnIcon />
-          <TextField
+          <Input
             value={city}
             onChange={handleCityChange}
-            fullWidth
             placeholder="City, province, or remote"
-            sx={{
-              "& .MuiOutlinedInput-notchedOutline": {
-                border: "none",
-              },
-              flex: 1,
-            }}
           />
           <Button
             variant="contained"
@@ -142,10 +130,91 @@ export default function Homepage() {
           indicatorColor="primary"
           textColor="primary"
         >
-          <Tab label="Job Feed" />
-          <Tab label="New Results for Recent Searches" />
+          <Tab
+            sx={{
+              textTransform: "none",
+              color: "black",
+              "&.Mui-selected": {
+                color: "black",
+                fontWeight: "bold",
+              },
+              fontSize: "1.2rem",
+            }}
+            label="Job Feed"
+          />
+          <Tab
+            sx={{
+              textTransform: "none",
+              color: "black",
+              "&.Mui-selected": {
+                color: "black",
+                fontWeight: "bold",
+              },
+              fontSize: "1.2rem",
+            }}
+            label="New Results for Recent Searches"
+          />
         </Tabs>
       </Box>
+      {value === 0 && (
+        <Container maxWidth="md" sx={{ mt: 2 }}>
+          <Grid container spacing={2} justifyContent="center">
+            <Grid item xs={6}>
+              <Grid container spacing={1} direction="column">
+                <Grid item>
+                  {jobs.map((job) => {
+                    return (
+                      <Card
+                        sx={{
+                          maxWidth: 345,
+                          margin: 2,
+                          border: "1px solid #ccc",
+                          boxShadow: "none",
+                          borderRadius: 2,
+                          cursor: "pointer",
+                        }}
+                        key={job.id}
+                      >
+                        <CardContent>
+                          <Typography gutterBottom variant="h5" component="div">
+                            {job.title}
+                          </Typography>
+                          <Typography variant="body2">
+                            {job.location.city} {job.location.state}
+                          </Typography>
+                          <Typography variant="body2">{job.jobType}</Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {job.description}
+                          </Typography>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </Grid>
+              </Grid>
+            </Grid>
+            {/* should show based on clicked job */}
+            <Grid item xs={6}>
+              <Card
+                sx={{
+                  maxWidth: 345,
+                  margin: 2,
+                  border: "1px solid #ccc",
+                  boxShadow: "none",
+                  borderRadius: 2,
+                }}
+              >
+                <CardContent>
+                  <Typography variant="h5">Right Column Card</Typography>
+                  <Typography variant="body2">
+                    Content for the right column card
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
+        </Container>
+      )}
     </>
   );
 }
