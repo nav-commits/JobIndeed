@@ -14,17 +14,23 @@ import {
   CardContent,
   Grid,
   Container,
+  ListItem,
+  ListItemText,
+  List,
+  IconButton,
 } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import SearchIcon from "@mui/icons-material/Search";
 import theme from "../styles/theme";
 import Input from "../components/Atoms/Input/Input";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 export default function Homepage() {
   const [value, setValue] = useState(0);
   const [job, setJob] = useState("");
   const [city, setCity] = useState("");
   const [jobs, setJobs] = useState([]);
+  const [activeTab, setActiveTab] = useState(1);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -47,7 +53,13 @@ export default function Homepage() {
     };
     fetchJobsCollection();
   }, []);
-  console.log(jobs);
+  const filteredData =
+    activeTab === 0
+      ? jobs
+      : jobs.filter(item => item.
+        companyId
+         === activeTab);
+
   return (
     <>
       <Box
@@ -156,8 +168,8 @@ export default function Homepage() {
           />
         </Tabs>
       </Box>
-      {value === 0 && (
-        <Container maxWidth="md" sx={{ mt: 2 }}>
+      {value === 0 ? (
+        <Container maxWidth="lg" sx={{ mt: 2 }}>
           <Grid container spacing={2} justifyContent="center">
             <Grid item xs={6}>
               <Grid container spacing={1} direction="column">
@@ -166,26 +178,65 @@ export default function Homepage() {
                     return (
                       <Card
                         sx={{
-                          maxWidth: 345,
                           margin: 2,
                           border: "1px solid #ccc",
                           boxShadow: "none",
                           borderRadius: 2,
                           cursor: "pointer",
+                          borderColor: activeTab === job.companyId ?  'primary.main' : '',
                         }}
                         key={job.id}
+                        onClick={() => setActiveTab(job.companyId)}
                       >
                         <CardContent>
-                          <Typography gutterBottom variant="h5" component="div">
-                            {job.title}
+                          <Box
+                            sx={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              alignItems: "center",
+                            }}
+                          >
+                            <Typography
+                              gutterBottom
+                              variant="h5"
+                              component="div"
+                            >
+                              {job.title}
+                            </Typography>
+                            <IconButton>
+                              <MoreVertIcon />
+                            </IconButton>
+                          </Box>
+
+                          <Typography
+                            variant="body1"
+                            sx={{ fontWeight: "bold" }}
+                          >
+                            {job.companyName}
                           </Typography>
+
                           <Typography variant="body2">
                             {job.location.city} {job.location.state}
                           </Typography>
-                          <Typography variant="body2">{job.jobType}</Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            {job.description}
+
+                          <Typography
+                            sx={{
+                              backgroundColor: "lightgrey",
+                              width: "4rem",
+                              mt: 0.7,
+                              pl: 1,
+                              borderRadius: 0.8,
+                            }}
+                            variant="body2"
+                          >
+                            {job.jobType}
                           </Typography>
+
+                          <List>
+                            <ListItem>
+                              <ListItemText primary={job.description} />
+                            </ListItem>
+                          </List>
                         </CardContent>
                       </Card>
                     );
@@ -193,7 +244,6 @@ export default function Homepage() {
                 </Grid>
               </Grid>
             </Grid>
-            {/* should show based on clicked job */}
             <Grid item xs={6}>
               <Card
                 sx={{
@@ -205,15 +255,53 @@ export default function Homepage() {
                 }}
               >
                 <CardContent>
-                  <Typography variant="h5">Right Column Card</Typography>
-                  <Typography variant="body2">
-                    Content for the right column card
-                  </Typography>
+                  {filteredData.length > 0 ? (
+                    filteredData.map((item) => (
+                      <div key={item.id}>
+                           <Typography
+                            variant="body1"
+                            sx={{ fontWeight: "bold" }}
+                          >
+                            {item.companyName}
+                          </Typography>
+
+                          <Typography variant="body2">
+                            {item.location.city} {item.location.state}
+                          </Typography>
+
+                          <Typography
+                            sx={{
+                              backgroundColor: "lightgrey",
+                              width: "4rem",
+                              mt: 0.7,
+                              pl: 1,
+                              borderRadius: 0.8,
+                            }}
+                            variant="body2"
+                          >
+                            {item.jobType}
+                          </Typography>
+
+                          <List>
+                            <ListItem>
+                              <ListItemText primary={item.description} />
+                            </ListItem>
+                          </List>
+
+                      </div>
+                    ))
+                  ) : (
+                    <div>No content available</div>
+                  )}
                 </CardContent>
               </Card>
             </Grid>
           </Grid>
         </Container>
+      ) : (
+        <Typography sx={{ textAlign: "center", mt: 3 }}>
+          No Recent Searches
+        </Typography>
       )}
     </>
   );
